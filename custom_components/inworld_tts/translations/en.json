@@ -1,0 +1,40 @@
+{
+  "config": {
+    "error": {
+      "invalid_api_key": "Invalid API key",
+      "cannot_connect": "Unable to connect",
+      "unknown": "Unexpected error"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "api_key": "API Key",
+          "model": "Model"
+        },
+        "data_description": {
+          "api_key": "Base64 API key from the Inworld AI portal (Settings → API Keys → Basic).",
+          "model": "TTS model to use for speech synthesis."
+        }
+      }
+    }
+  },
+  "entity": {
+    "tts": {
+      "inworld_tts": {
+        "name": "Text-to-speech"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "model": "Model"
+        },
+        "data_description": {
+          "model": "TTS model to use for speech synthesis."
+        }
+      }
+    }
+  }
+}

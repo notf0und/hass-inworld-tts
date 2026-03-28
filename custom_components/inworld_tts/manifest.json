@@ -1,0 +1,12 @@
+{
+  "domain": "inworld_tts",
+  "name": "Inworld AI TTS",
+  "codeowners": ["@notf0und"],
+  "config_flow": true,
+  "documentation": "https://github.com/notf0und/hass-inworld-tts",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/notf0und/hass-inworld-tts/issues",
+  "requirements": [],
+  "version": "1.0.0"
+}
