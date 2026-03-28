@@ -4,7 +4,7 @@
 
 # Inworld AI TTS for Home Assistant
 
-A Home Assistant integration for [Inworld AI Text-to-Speech (TTS)](https://docs.inworld.ai/tts/overview).
+A Home Assistant integration for [Inworld AI Text-to-Speech (TTS)](https://platform.inworld.ai/).
 
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=notf0und&repository=hass-inworld-tts&category=Integration)
