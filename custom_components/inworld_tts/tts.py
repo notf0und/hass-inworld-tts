@@ -19,12 +19,15 @@ from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from . import InworldTTSConfigEntry
 from .const import (
+    CONF_DELIVERY_MODE,
     CONF_MODEL,
+    DEFAULT_DELIVERY_MODE,
     DEFAULT_MODEL,
     DEFAULT_VOICE,
     DOMAIN,
     INWORLD_TTS_API_URL,
     INWORLD_VOICES_API_URL,
+    MODEL_TTS_2,
     MODELS,
 )
 
@@ -60,6 +63,9 @@ async def async_setup_entry(
     """Set up Inworld AI TTS platform via config entry."""
     api_key = config_entry.runtime_data.api_key
     model = config_entry.options.get(CONF_MODEL, DEFAULT_MODEL)
+    delivery_mode = config_entry.options.get(
+        CONF_DELIVERY_MODE, DEFAULT_DELIVERY_MODE
+    )
 
     # Fetch available voices once at setup so the pipeline dropdown is populated
     voices: list[Voice] = []
@@ -80,12 +86,18 @@ async def async_setup_entry(
     except Exception:  # noqa: BLE001
         _LOGGER.exception("Could not fetch Inworld AI voices at setup")
 
-    _LOGGER.debug("Inworld AI TTS: setup with %d voices, model=%s", len(voices), model)
+    _LOGGER.debug(
+        "Inworld AI TTS: setup with %d voices, model=%s, delivery_mode=%s",
+        len(voices),
+        model,
+        delivery_mode,
+    )
     async_add_entities(
         [
             InworldTTSEntity(
                 api_key=api_key,
                 model=model,
+                delivery_mode=delivery_mode,
                 voices=voices,
                 entry_id=config_entry.entry_id,
             )
@@ -102,12 +114,14 @@ class InworldTTSEntity(TextToSpeechEntity):
         self,
         api_key: str,
         model: str,
+        delivery_mode: str,
         voices: list[Voice],
         entry_id: str,
     ) -> None:
         """Initialize the Inworld AI TTS entity."""
         self._api_key = api_key
         self._model = model
+        self._delivery_mode = delivery_mode
         self._voices = voices
         self._attr_name = "Inworld AI"
         self._attr_unique_id = entry_id
@@ -130,8 +144,27 @@ class InworldTTSEntity(TextToSpeechEntity):
     ) -> TtsAudioType:
         """Synthesize speech using the Inworld AI TTS API."""
         voice_id = options.get(ATTR_VOICE) or DEFAULT_VOICE
+
+        payload: dict[str, Any] = {
+            "text": message,
+            "voice_id": voice_id,
+            "model_id": self._model,
+            "audio_config": {
+                "audio_encoding": "LINEAR16",
+                "sample_rate_hertz": SAMPLE_RATE_HZ,
+            },
+        }
+        # deliveryMode is only honoured by inworld-tts-2 (it replaces temperature);
+        # sending it to the 1.5 models has no effect, so only include it for TTS 2.
+        if self._model == MODEL_TTS_2:
+            payload["delivery_mode"] = self._delivery_mode
+
         _LOGGER.debug(
-            "Inworld AI TTS: model=%s voice=%s text=%r", self._model, voice_id, message
+            "Inworld AI TTS: model=%s voice=%s delivery_mode=%s text=%r",
+            self._model,
+            voice_id,
+            self._delivery_mode if self._model == MODEL_TTS_2 else "n/a",
+            message,
         )
 
         session = async_get_clientsession(self.hass)
@@ -142,15 +175,7 @@ class InworldTTSEntity(TextToSpeechEntity):
                     "Authorization": f"Basic {self._api_key}",
                     "Content-Type": "application/json",
                 },
-                json={
-                    "text": message,
-                    "voice_id": voice_id,
-                    "model_id": self._model,
-                    "audio_config": {
-                        "audio_encoding": "LINEAR16",
-                        "sample_rate_hertz": SAMPLE_RATE_HZ,
-                    },
-                },
+                json=payload,
             ) as resp:
                 if resp.status in (401, 403):
                     raise HomeAssistantError("Inworld AI authentication failed")
