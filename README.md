@@ -27,7 +27,8 @@ A Home Assistant integration for [Inworld AI Text-to-Speech (TTS)](https://platf
 - 🔐 Secure API key management
 - ☁️ Cloud-based processing
 - 🌍 Support for 15 languages
-- 🚀 Choose between TTS 1.5 Max (best quality) and TTS 1.5 Mini (ultra-fast)
+- 🚀 Choose between TTS 2 (flagship, steerable), TTS 2 Flash (fastest) and the older TTS 1.5 models
+- 🎭 TTS 2 delivery mode (Stable / Balanced / Creative) and natural-language steering
 
 ## Installation
 
@@ -56,7 +57,7 @@ Click the button above or follow these steps:
 1. Go to **Settings** → **Devices & Services** → **+ Add Integration**
 2. Search for **Inworld AI TTS**
 3. Enter your [Inworld AI API key](https://platform.inworld.ai/api-keys)
-4. Select the TTS model (`TTS 1.5 Max` or `TTS 1.5 Mini`)
+4. Select the TTS model (`TTS 2`, `TTS 2 Flash`, or the deprecated `TTS 1.5` models) and, for TTS 2, a delivery mode
 5. Optionally set a default voice ID (e.g. `Dennis`)
 6. Click **Submit**
 
@@ -111,8 +112,10 @@ Or add it to your voice assistant pipeline:
 
 | Model | ID | Description |
 |-------|----|-------------|
-| TTS 1.5 Max | `inworld-tts-1.5-max` | Flagship model, best balance of quality and speed |
-| TTS 1.5 Mini | `inworld-tts-1.5-mini` | Ultra-fast, most cost-efficient |
+| TTS 2 | `inworld-tts-2` | Flagship: best quality, natural-language steering (e.g. `[say warmly] Hello`), delivery mode |
+| TTS 2 Flash | `inworld-tts-2-flash` | Fastest and most cost-efficient (~20 ms P90 TTFB); no steering, delivery mode ignored |
+| TTS 1.5 Max | `inworld-tts-1.5-max` | Deprecated by Inworld; current default for backward compatibility |
+| TTS 1.5 Mini | `inworld-tts-1.5-mini` | Deprecated by Inworld |
 
 ## Supported Languages
 

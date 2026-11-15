@@ -6,13 +6,15 @@ CONF_MODEL = "model"
 CONF_DELIVERY_MODE = "delivery_mode"
 
 MODEL_TTS_2 = "inworld-tts-2"
+MODEL_TTS_2_FLASH = "inworld-tts-2-flash"
 MODEL_TTS_1_5_MAX = "inworld-tts-1.5-max"
 MODEL_TTS_1_5_MINI = "inworld-tts-1.5-mini"
 
 MODELS = {
     MODEL_TTS_2: "TTS 2 (Flagship, natural-language steering)",
-    MODEL_TTS_1_5_MAX: "TTS 1.5 Max (Best quality)",
-    MODEL_TTS_1_5_MINI: "TTS 1.5 Mini (Ultra-fast)",
+    MODEL_TTS_2_FLASH: "TTS 2 Flash (Fastest, no steering)",
+    MODEL_TTS_1_5_MAX: "TTS 1.5 Max (Deprecated by Inworld)",
+    MODEL_TTS_1_5_MINI: "TTS 1.5 Mini (Deprecated by Inworld)",
 }
 
 # Delivery mode only affects inworld-tts-2 (it replaces temperature there and is
