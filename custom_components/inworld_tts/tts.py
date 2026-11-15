@@ -154,10 +154,11 @@ class InworldTTSEntity(TextToSpeechEntity):
                 "sample_rate_hertz": SAMPLE_RATE_HZ,
             },
         }
-        # deliveryMode is only honoured by inworld-tts-2 (it replaces temperature);
-        # sending it to the 1.5 models has no effect, so only include it for TTS 2.
+        # deliveryMode (camelCase, as in Inworld's API reference) is only honoured by
+        # inworld-tts-2 (it replaces temperature) and ignored by every other model,
+        # including inworld-tts-2-flash, so only include it for TTS 2.
         if self._model == MODEL_TTS_2:
-            payload["delivery_mode"] = self._delivery_mode
+            payload["deliveryMode"] = self._delivery_mode
 
         _LOGGER.debug(
             "Inworld AI TTS: model=%s voice=%s delivery_mode=%s text=%r",
