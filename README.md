@@ -112,9 +112,9 @@ Or add it to your voice assistant pipeline:
 
 | Model | ID | Description |
 |-------|----|-------------|
-| TTS 2 | `inworld-tts-2` | Flagship: best quality, natural-language steering (e.g. `[say warmly] Hello`), delivery mode |
+| TTS 2 | `inworld-tts-2` | **Default.** Flagship: best quality, natural-language steering (e.g. `[say warmly] Hello`), delivery mode |
 | TTS 2 Flash | `inworld-tts-2-flash` | Fastest and most cost-efficient (~20 ms P90 TTFB); no steering, delivery mode ignored |
-| TTS 1.5 Max | `inworld-tts-1.5-max` | Deprecated by Inworld; current default for backward compatibility |
+| TTS 1.5 Max | `inworld-tts-1.5-max` | Deprecated by Inworld |
 | TTS 1.5 Mini | `inworld-tts-1.5-mini` | Deprecated by Inworld |
 
 ## Supported Languages
