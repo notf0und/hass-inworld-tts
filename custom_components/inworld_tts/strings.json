@@ -9,11 +9,13 @@
       "user": {
         "data": {
           "api_key": "API Key",
-          "model": "Model"
+          "model": "Model",
+          "delivery_mode": "Delivery mode"
         },
         "data_description": {
           "api_key": "Base64 API key from the Inworld AI portal (Settings → API Keys → Basic).",
-          "model": "TTS model to use for speech synthesis."
+          "model": "TTS model to use for speech synthesis.",
+          "delivery_mode": "Expressiveness of the voice. Only applies to TTS 2 (ignored by the TTS 1.5 models). Creative gives the widest emotional range."
         }
       }
     }
@@ -29,10 +31,12 @@
     "step": {
       "init": {
         "data": {
-          "model": "Model"
+          "model": "Model",
+          "delivery_mode": "Delivery mode"
         },
         "data_description": {
-          "model": "TTS model to use for speech synthesis."
+          "model": "TTS model to use for speech synthesis.",
+          "delivery_mode": "Expressiveness of the voice. Only applies to TTS 2 (ignored by the TTS 1.5 models). Creative gives the widest emotional range."
         }
       }
     }

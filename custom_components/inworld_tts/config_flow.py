@@ -21,14 +21,41 @@ from homeassistant.helpers.selector import (
 
 from . import InworldTTSConfigEntry
 from .const import (
+    CONF_DELIVERY_MODE,
     CONF_MODEL,
+    DEFAULT_DELIVERY_MODE,
     DEFAULT_MODEL,
+    DELIVERY_MODES,
     DOMAIN,
     INWORLD_VOICES_API_URL,
     MODELS,
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def _model_selector() -> SelectSelector:
+    """Return a selector listing the available TTS models."""
+    return SelectSelector(
+        SelectSelectorConfig(
+            options=[
+                SelectOptionDict(label=label, value=model_id)
+                for model_id, label in MODELS.items()
+            ]
+        )
+    )
+
+
+def _delivery_mode_selector() -> SelectSelector:
+    """Return a selector listing the available delivery modes (TTS 2 only)."""
+    return SelectSelector(
+        SelectSelectorConfig(
+            options=[
+                SelectOptionDict(label=label, value=mode_id)
+                for mode_id, label in DELIVERY_MODES.items()
+            ]
+        )
+    )
 
 
 async def _validate_api_key(hass, api_key: str) -> str | None:
@@ -69,7 +96,12 @@ class InworldTTSConfigFlow(ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(
                     title="Inworld AI TTS",
                     data={CONF_API_KEY: user_input[CONF_API_KEY]},
-                    options={CONF_MODEL: user_input.get(CONF_MODEL, DEFAULT_MODEL)},
+                    options={
+                        CONF_MODEL: user_input.get(CONF_MODEL, DEFAULT_MODEL),
+                        CONF_DELIVERY_MODE: user_input.get(
+                            CONF_DELIVERY_MODE, DEFAULT_DELIVERY_MODE
+                        ),
+                    },
                 )
 
         schema = vol.Schema(
@@ -77,14 +109,10 @@ class InworldTTSConfigFlow(ConfigFlow, domain=DOMAIN):
                 vol.Required(CONF_API_KEY): TextSelector(
                     TextSelectorConfig(type=TextSelectorType.PASSWORD)
                 ),
-                vol.Required(CONF_MODEL, default=DEFAULT_MODEL): SelectSelector(
-                    SelectSelectorConfig(
-                        options=[
-                            SelectOptionDict(label=label, value=model_id)
-                            for model_id, label in MODELS.items()
-                        ]
-                    )
-                ),
+                vol.Required(CONF_MODEL, default=DEFAULT_MODEL): _model_selector(),
+                vol.Required(
+                    CONF_DELIVERY_MODE, default=DEFAULT_DELIVERY_MODE
+                ): _delivery_mode_selector(),
             }
         )
 
@@ -95,7 +123,7 @@ class InworldTTSConfigFlow(ConfigFlow, domain=DOMAIN):
     @staticmethod
     def async_get_options_flow(config_entry: InworldTTSConfigEntry) -> OptionsFlow:
         """Create the options flow."""
-        return InworldTTSOptionsFlow(config_entry)
+        return InworldTTSOptionsFlow()
 
 
 class InworldTTSOptionsFlow(OptionsFlow):
@@ -109,21 +137,21 @@ class InworldTTSOptionsFlow(OptionsFlow):
             return self.async_create_entry(title="Inworld AI TTS", data=user_input)
 
         current_model = self.config_entry.options.get(CONF_MODEL, DEFAULT_MODEL)
+        current_delivery_mode = self.config_entry.options.get(
+            CONF_DELIVERY_MODE, DEFAULT_DELIVERY_MODE
+        )
 
         schema = self.add_suggested_values_to_schema(
             vol.Schema(
                 {
-                    vol.Required(CONF_MODEL): SelectSelector(
-                        SelectSelectorConfig(
-                            options=[
-                                SelectOptionDict(label=label, value=model_id)
-                                for model_id, label in MODELS.items()
-                            ]
-                        )
-                    ),
+                    vol.Required(CONF_MODEL): _model_selector(),
+                    vol.Required(CONF_DELIVERY_MODE): _delivery_mode_selector(),
                 }
             ),
-            {CONF_MODEL: current_model},
+            {
+                CONF_MODEL: current_model,
+                CONF_DELIVERY_MODE: current_delivery_mode,
+            },
         )
 
         return self.async_show_form(step_id="init", data_schema=schema)
